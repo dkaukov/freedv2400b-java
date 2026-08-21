@@ -11,7 +11,13 @@
  */
 package io.github.dkaukov.modem2400b;
 
-/** Estimates Manchester symbol timing from the squared 4.8 kHz clock line. */
+/**
+ * Estimates Manchester symbol timing from the squared 4.8 kHz clock line.
+ *
+ * <p>Based on the fine-timing estimator in Codec2 {@code fmfsk.c} at revision
+ * {@code 96e8a19c2487fd83bd981ce570f257aef42618f9}, originally authored by
+ * Brady O'Brien and copyright David Rowe.</p>
+ */
 final class ManchesterTimingEstimator {
     private static final int PERIOD = 10;
     private static final float[] CLOCK_COS = new float[PERIOD], CLOCK_SIN = new float[PERIOD];

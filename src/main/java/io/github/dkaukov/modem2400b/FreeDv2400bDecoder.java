@@ -17,6 +17,10 @@ import java.util.Arrays;
 
 /**
  * Stateful Codec2-compatible reference receiver. Instances are not thread-safe.
+ *
+ * <p>The demodulator is a Java port of Codec2 {@code fmfsk.c} at revision
+ * {@code 96e8a19c2487fd83bd981ce570f257aef42618f9}. The original FMFSK modem
+ * code identifies Brady O'Brien as author and is copyright David Rowe.</p>
  */
 public final class FreeDv2400bDecoder implements ModemDecoder {
     private static final int SAMPLES_PER_MANCHESTER_SYMBOL = 10;
@@ -32,6 +36,16 @@ public final class FreeDv2400bDecoder implements ModemDecoder {
     private final VhfTypeADeframer deFramer = new VhfTypeADeframer();
     private int requiredInputSamples = FreeDv2400b.TX_SAMPLES;
     private float lastOdd, previousTiming, ppm, snr;
+
+    @Override
+    public int maximumInputSamples() {
+        return FreeDv2400b.MAX_RX_INPUT;
+    }
+
+    @Override
+    public int payloadBytes() {
+        return FreeDv2400b.PAYLOAD_BYTES;
+    }
 
     @Override
     public int inputSamplesRequired() {

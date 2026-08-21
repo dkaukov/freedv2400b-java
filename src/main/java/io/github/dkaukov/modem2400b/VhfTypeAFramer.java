@@ -18,10 +18,14 @@ package io.github.dkaukov.modem2400b;
  * positions 16 through 39 and 56 through 83. The unused low nibble of the
  * seventh payload byte is ignored. Protocol, varicode, padding, and the voice
  * unique word remain at their raw-wrapper defaults.</p>
+ *
+ * <p>Ported from Codec2 {@code freedv_vhf_framing.c} at revision
+ * {@code 96e8a19c2487fd83bd981ce570f257aef42618f9}. The original framing code
+ * identifies Brady O'Brien as author and is copyright David Rowe.</p>
  */
 final class VhfTypeAFramer {
-    /** Packed representation of the fixed raw-payload Type-A frame template. */
-    private static final byte[] BLANK = hex("a7a700000067ad0000000272");
+    /** Unpacked fixed raw-payload Type-A frame template. */
+    private static final byte[] BLANK_BITS = unpack(hex("a7a700000067ad0000000272"));
 
     private VhfTypeAFramer() {
     }
@@ -36,7 +40,7 @@ final class VhfTypeAFramer {
      *             or one
      */
     static void frame(byte[] payload, int payloadOffset, byte[] bits) {
-        System.arraycopy(unpack(BLANK), 0, bits, 0, 96);
+        System.arraycopy(BLANK_BITS, 0, bits, 0, BLANK_BITS.length);
         for (int i = 0; i < 24; i++) {
             bits[16 + i] = (byte) bit(payload, payloadOffset, i);
         }

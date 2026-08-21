@@ -14,7 +14,9 @@ package io.github.dkaukov.modem2400b.atoms;
 @FunctionalInterface
 public interface FrameHandler {
     /**
-     * Payload is borrowed and is valid only during this callback.
+     * Handles an extracted frame. Voice frames carry the decoder's payload;
+     * data frames have a payload length of zero. The payload array is borrowed
+     * and is valid only during this callback.
      */
     void onFrame(byte[] payload, int offset, int length, DecodeResult result);
 }
