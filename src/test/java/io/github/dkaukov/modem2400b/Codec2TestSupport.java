@@ -33,7 +33,11 @@ final class Codec2TestSupport {
     }
 
     static short[] readWav() throws Exception {
-        byte[] wav = readWavBytes();
+        return readWav("/modem_2400b_short.wav");
+    }
+
+    static short[] readWav(String resourceName) throws Exception {
+        byte[] wav = readWavBytes(resourceName);
         ByteBuffer pcm = ByteBuffer.wrap(wav, 44, wav.length - 44).slice().order(ByteOrder.LITTLE_ENDIAN);
         short[] samples = new short[pcm.remaining() / 2];
         for (int i = 0; i < samples.length; i++) {
@@ -43,7 +47,11 @@ final class Codec2TestSupport {
     }
 
     static byte[] readWavBytes() throws Exception {
-        try (InputStream input = Codec2TestSupport.class.getResourceAsStream("/modem_2400b_short.wav")) {
+        return readWavBytes("/modem_2400b_short.wav");
+    }
+
+    private static byte[] readWavBytes(String resourceName) throws Exception {
+        try (InputStream input = Codec2TestSupport.class.getResourceAsStream(resourceName)) {
             return Objects.requireNonNull(input).readAllBytes();
         }
     }

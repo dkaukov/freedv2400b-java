@@ -41,3 +41,9 @@ waveform containing 25 distinct payloads, beginning with `a3156e07b505c0`.
 Tests validate its published WAV/PCM data, retain the separate
 `11223344556670` Type-A framing assertion, and verify the payload sequence
 actually present in the waveform.
+
+The longer `ve9qrp_2400b.wav` receiver fixture comes from the
+[Debian FreeDV 1.4.3 source package](https://sources.debian.org/src/freedv/1.4.3~1gdc71a1c-1/wav/ve9qrp_2400b.wav/)
+(SHA-256 `b14cac59215cef0f8d7ed290145b6fd48198a0ed1288fa7a7e547f32f2a78110`).
+It verifies that the decoder acquires sync on a real recording, remains
+synchronized, and extracts all 2,810 voice frames.
