@@ -12,6 +12,7 @@
 package io.github.dkaukov.modem2400b;
 
 import io.github.dkaukov.modem2400b.atoms.FrameHandler;
+import io.github.dkaukov.modem2400b.atoms.FrameType;
 import io.github.dkaukov.modem2400b.atoms.ModemDecoder;
 import java.util.Objects;
 
@@ -19,8 +20,8 @@ import java.util.Objects;
 public final class StreamingDecoder {
     private final ModemDecoder decoder;
     private final FrameHandler handler;
-    private final short[] fifo = new short[FreeDv2400b.MAX_RX_INPUT];
-    private final byte[] payload = new byte[7];
+    private final short[] fifo;
+    private final byte[] payload;
     private final MutableDecodeResult result = new MutableDecodeResult();
     private int buffered;
     private boolean sync;
@@ -28,6 +29,11 @@ public final class StreamingDecoder {
     public StreamingDecoder(ModemDecoder decoder, FrameHandler handler) {
         this.decoder = Objects.requireNonNull(decoder);
         this.handler = Objects.requireNonNull(handler);
+        if (decoder.maximumInputSamples() <= 0 || decoder.payloadBytes() <= 0) {
+            throw new IllegalArgumentException("decoder sizes must be positive");
+        }
+        fifo = new short[decoder.maximumInputSamples()];
+        payload = new byte[decoder.payloadBytes()];
     }
 
     public int accept(short[] samples, int offset, int length) {
@@ -39,17 +45,19 @@ public final class StreamingDecoder {
         }
         int end = offset + length;
         while (offset < end) {
-            int need = decoder.inputSamplesRequired() - buffered;
+            int required = inputSamplesRequired();
+            int need = required - buffered;
             int n = Math.min(need, end - offset);
             System.arraycopy(samples, offset, fifo, buffered, n);
             offset += n;
             buffered += n;
-            if (buffered == decoder.inputSamplesRequired()) {
+            if (buffered == required) {
                 decoder.decode(payload, 0, fifo, 0, result);
                 buffered = 0;
                 sync = result.synchronizedNow();
                 if (result.framePresent()) {
-                    handler.onFrame(payload, 0, 7, result.snapshot());
+                    int payloadLength = result.frameType() == FrameType.VOICE ? payload.length : 0;
+                    handler.onFrame(payload, 0, payloadLength, result.snapshot());
                 }
             }
         }
@@ -68,5 +76,13 @@ public final class StreamingDecoder {
         decoder.reset();
         buffered = 0;
         sync = false;
+    }
+
+    private int inputSamplesRequired() {
+        int required = decoder.inputSamplesRequired();
+        if (required <= 0 || required > fifo.length) {
+            throw new IllegalStateException("decoder requested unsupported input size: " + required);
+        }
+        return required;
     }
 }

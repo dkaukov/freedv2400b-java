@@ -15,6 +15,11 @@ import io.github.dkaukov.modem2400b.atoms.ModemEncoder;
 
 /**
  * Bit-exact Codec2-compatible discriminator-level encoder.
+ *
+ * <p>The Manchester level mapping is ported from Codec2 {@code fmfsk.c} at
+ * revision {@code 96e8a19c2487fd83bd981ce570f257aef42618f9}. The original
+ * FMFSK modem code identifies Brady O'Brien as author and is copyright David
+ * Rowe.</p>
  */
 public final class FreeDv2400bEncoder implements ModemEncoder {
     private final byte[] frame = new byte[FreeDv2400b.FRAME_BITS];

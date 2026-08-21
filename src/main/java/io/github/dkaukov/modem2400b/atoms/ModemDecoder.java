@@ -14,6 +14,12 @@ package io.github.dkaukov.modem2400b.atoms;
 import io.github.dkaukov.modem2400b.MutableDecodeResult;
 
 public interface ModemDecoder {
+    /** Maximum number of input samples requested by this decoder. */
+    int maximumInputSamples();
+
+    /** Number of bytes in the decoder's voice payload output. */
+    int payloadBytes();
+
     /**
      * Number of samples the next decode call must provide.
      */

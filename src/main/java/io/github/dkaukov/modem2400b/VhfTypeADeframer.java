@@ -24,6 +24,10 @@ import io.github.dkaukov.modem2400b.atoms.FrameType;
  * seven bytes; data frames are identified but not decoded by this raw voice
  * payload implementation.</p>
  *
+ * <p>Ported from Codec2 {@code freedv_vhf_framing.c} at revision
+ * {@code 96e8a19c2487fd83bd981ce570f257aef42618f9}. The original framing code
+ * identifies Brady O'Brien as author and is copyright David Rowe.</p>
+ *
  * <p>Instances are stateful, are not thread-safe, and belong to one receive
  * stream.</p>
  */

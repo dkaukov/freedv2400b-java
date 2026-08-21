@@ -12,6 +12,7 @@
 package io.github.dkaukov.modem2400b;
 
 import io.github.dkaukov.modem2400b.atoms.FrameType;
+import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +30,12 @@ class DeframerTest {
         byte[] miss=frame();for(int i=0;i<8;i++)miss[40+i]^=1;
         for(int i=0;i<4;i++){assertTrue(d.accept(miss,out,0));assertTrue(d.synchronizedNow());}
         assertTrue(d.accept(miss,out,0));assertFalse(d.synchronizedNow());
+    }
+    @Test void dataFrameIsDetectedWithoutWritingVoicePayload(){
+        VhfTypeADeframer d=new VhfTypeADeframer();byte[] data=frame();
+        for(int i=0;i<16;i++)data[40+i]=(byte)((0xf1fc>>>(15-i))&1);
+        byte[] out=new byte[7];Arrays.fill(out,(byte)0x5a);byte[] before=out.clone();
+        assertTrue(d.accept(data,out,0));assertEquals(FrameType.DATA,d.frameType());assertArrayEquals(before,out);
     }
     private static byte[] frame(){byte[] b=new byte[96];VhfTypeAFramer.frame(PAYLOAD,0,b);return b;}
     private static void invert(byte[] b){for(int i=0;i<b.length;i++)b[i]^=1;}
