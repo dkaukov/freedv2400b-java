@@ -1,0 +1,14 @@
+# Build output
+/target/
+
+# Local IDE files
+/.idea/
+*.iml
+
+# Planning and agent-only files
+/docs/
+AGENTS.md
+**/AGENTS.md
+
+# OS metadata
+.DS_Store
